@@ -4,7 +4,7 @@
 #define VERSION_TEXT "test"
 #define VERSION_NUMBER 35
 #define MINOR_VERSION_NUMBER 0
-#define PATCH_VERSION_NUMBER 32
+#define PATCH_VERSION_NUMBER 64
 
 #if defined(VERSION_JP)
     #define VERSION_REGION "JP"
