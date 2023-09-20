@@ -1,4 +1,5 @@
 #include <string.h>
+#include <math.h>
 #include "djui.h"
 #include "djui_panel.h"
 #include "djui_panel_pause.h"
@@ -278,6 +279,10 @@ void djui_interactable_on_key_up(int scancode) {
             if (scancode == (int)configKeyPlayerList[i]) {
                 if (gDjuiPlayerList != NULL) {
                     djui_base_set_visible(&gDjuiPlayerList->base, false);
+                    pageIndex++;
+                    if (playerListSize * pageIndex > ceil((network_player_connected_count() - 1) / playerListSize)*playerListSize) {
+                        pageIndex = 0;
+                    }
                 }
                 if (gDjuiModList != NULL) {
                     djui_base_set_visible(&gDjuiModList->base, false);

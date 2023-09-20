@@ -47,6 +47,8 @@ extern struct DjuiBase* gDjuiCursorDownOn;
 extern struct DjuiBase* gInteractableFocus;
 extern struct DjuiBase* gInteractableBinding;
 extern struct DjuiBase* gInteractableMouseDown;
+extern const u8 playerListSize;
+extern u8 pageIndex;
 
 bool djui_interactable_is_binding(void);
 void djui_interactable_set_binding(struct DjuiBase* base);

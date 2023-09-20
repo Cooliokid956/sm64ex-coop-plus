@@ -18,6 +18,10 @@ static struct DjuiText* djuiTextDescriptions[MAX_PLAYERS] = { 0 };
 static struct DjuiText* djuiTextLocations[MAX_PLAYERS] = { 0 };
 static struct DjuiText* djuiTextAct[MAX_PLAYERS] = { 0 };
 
+const u8 playerListSize = 8;
+u8 pageIndex = 0;
+static u8 p = 0;
+
 static void playerlist_update_row(u8 i, struct NetworkPlayer *np) {
     u8 charIndex = np->overrideModelIndex;
     char sActNum[7];
@@ -34,6 +38,9 @@ static void playerlist_update_row(u8 i, struct NetworkPlayer *np) {
     u8 visible = np->connected;
     if (np == gNetworkPlayerServer && gServerSettings.headlessServer) {
         visible = false;
+    } else if (p < playerListSize * pageIndex) {
+        visible = false;
+        p++;
     }
 
     djui_base_set_visible(&djuiRow[i]->base, visible);
@@ -51,11 +58,11 @@ static void playerlist_update_row(u8 i, struct NetworkPlayer *np) {
 
 void djui_panel_playerlist_on_render_pre(UNUSED struct DjuiBase* base, UNUSED bool* skipRender) {
     s32 j = 0;
+    p = 0;
     
     for (s32 i = 0; i < MAX_PLAYERS; i++) {
         struct NetworkPlayer *np = &gNetworkPlayers[i];
-        if (!np->connected) { continue; }
-        playerlist_update_row(j++, np);
+        if (np->connected) { playerlist_update_row(j++, np); }
     }
 
     while (j < MAX_PLAYERS) {
@@ -65,7 +72,7 @@ void djui_panel_playerlist_on_render_pre(UNUSED struct DjuiBase* base, UNUSED bo
 }
 
 void djui_panel_playerlist_create(UNUSED struct DjuiBase* caller) {
-    f32 bodyHeight = (MAX_PLAYERS * 32) + (MAX_PLAYERS - 1) * 4;
+    f32 bodyHeight = (playerListSize * 32) + (playerListSize - 1) * 4;
 
     struct DjuiThreePanel* panel = djui_panel_menu_create(DLANG(PLAYER_LIST, PLAYERS));
     djui_three_panel_set_body_size(panel, bodyHeight);
@@ -78,7 +85,7 @@ void djui_panel_playerlist_create(UNUSED struct DjuiBase* caller) {
     struct DjuiBase* body = djui_three_panel_get_body(panel);
     djui_flow_layout_set_margin((struct DjuiFlowLayout*)body, 4);
 
-    for (s32 i = 0; i < MAX_PLAYERS; i++) {
+    for (u8 i = 0; i < MAX_PLAYERS; i++) {
         struct DjuiFlowLayout* row = djui_flow_layout_create(body);
         djui_base_set_size_type(&row->base, DJUI_SVT_RELATIVE, DJUI_SVT_ABSOLUTE);
         djui_base_set_size(&row->base, 1.0f, 32.0f);
